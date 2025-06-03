@@ -4,19 +4,20 @@ const router = express.Router();
 const taskController = require('../controllers/taskController');
 const validate = require('../middleware/validationMiddleware');
 const { updateTaskSchema, createTaskSchema, assignTaskSchema, categorySchema, commentSchema } = require('../validations/taskValidation');
+const { protect } = require('../middleware/authMiddleware');
 
 // Routes
-router.get('/', taskController.getAllTasks);
-router.get('/:id', taskController.getTaskById);
-router.post('/', validate(createTaskSchema), taskController.createTask);
-router.put('/:id', validate(updateTaskSchema), taskController.updateTask);
-router.delete('/:id', taskController.deleteTask);
+router.get('/',protect, taskController.getAllTasks);
+router.get('/:id',protect, taskController.getTaskById);
+router.post('/',protect, validate(createTaskSchema), taskController.createTask);
+router.put('/:id',protect, validate(updateTaskSchema), taskController.updateTask);
+router.delete('/:id', protect,taskController.deleteTask);
 
 // Additional Routes
-router.post('/filter', taskController.filterTasks); 
-router.post('/paginate', taskController.paginateTasks); 
-router.post('/:id/assign', validate(assignTaskSchema), taskController.assignTask);
-router.post('/:id/category', validate(categorySchema), taskController.addCategoryToTask);
-router.post('/:id/comment', validate(commentSchema), taskController.addCommentToTask);
+router.post('/filter',protect, taskController.filterTasks); 
+router.post('/paginate',protect, taskController.paginateTasks); 
+router.post('/:id/assign', protect,validate(assignTaskSchema), taskController.assignTask);
+router.post('/:id/add-category',protect, validate(categorySchema), taskController.addCategoryToTask);
+router.post('/:id/add-comment',protect, validate(commentSchema), taskController.addCommentToTask);
 
 module.exports = router;
